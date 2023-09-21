@@ -1,3 +1,5 @@
 fastapi==0.103.1
 pydantic==2.3.0
 uvicorn==0.16.0
+aiofiles==23.2.1
+Jinja2==3.1.2
