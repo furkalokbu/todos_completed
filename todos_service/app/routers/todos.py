@@ -1,5 +1,7 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, Request
+from starlette import status
+from starlette.responses import RedirectResponse
+from fastapi import APIRouter, Depends, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from app.database import SessionLocal
@@ -36,6 +38,23 @@ async def add_new_todo(request: Request):
     return templates.TemplateResponse('add-todo.html', {'request': request})
 
 
+@router.post('/add-todo', response_class=HTMLResponse)
+async def create_todo(db: db_dependency, request: Request, title: str = Form(...), description: str = Form(...),
+                      priority: int = Form(...)):
+    model_todo = models.Todos()
+    model_todo.title = title
+    model_todo.description = description
+    model_todo.priority = priority
+    model_todo.complete = False
+    model_todo.owner_id = 1
+
+    db.add(model_todo)
+    db.commit()
+
+    return RedirectResponse(url='/todos', status_code=status.HTTP_302_FOUND)
+
+
 @router.get('/edit-todo/{todo_id}', response_class=HTMLResponse)
-async def edit_todo(request: Request):
-    return templates.TemplateResponse('edit-todo.html', {'request': request})
+async def edit_todo(db: db_dependency, request: Request, todo_id: int):
+    todo = db.query(models.Todos).filter(models.Todos.id == todo_id).first()
+    return templates.TemplateResponse('edit-todo.html', {'request': request, 'todo': todo})
