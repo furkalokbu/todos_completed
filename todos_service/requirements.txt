@@ -5,3 +5,5 @@ aiofiles==23.2.1
 Jinja2==3.1.2
 python-environ==0.4.54
 SQLAlchemy==2.0.20
+passlib==1.7.4
+psycopg2

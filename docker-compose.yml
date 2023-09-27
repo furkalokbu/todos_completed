@@ -16,7 +16,7 @@ services:
   db_postgres:
     image: postgres:15.4-alpine
     container_name: todos-service-db
-    env_file: .env
+    env_file: ./todos_service/app/.env
     restart: always
     volumes:
       - db_postgres:/var/lib/postgresql/data
